@@ -95,29 +95,23 @@ func (i *Iterator) Up() (*Iterator, error) {
 }
 
 // Right moves the Iterator on the right branch of down node (creates a new one)
-// PRE: !IsBottom returns an error if IsBottom
-func (i *Iterator) Right() (*Iterator, error) {
-	if i.IsBottom() {
-		return nil, errors.New("cannot go right when bottom")
-	}
+// PRE: !IsBottom
+func (i *Iterator) Right() *Iterator {
 	itr := NewIterator(i.whole)
 	itr.down = i.down.Right
 	itr.up = i.down
 	itr.isLeftArc = false
-	return itr, nil
+	return itr
 }
 
 // Left moves the Iterator on the left branch of down node (creates a new one)
-// PRE: !IsBottom returns an error if IsBottom
-func (i *Iterator) Left() (*Iterator, error) {
-	if i.IsBottom() {
-		return nil, errors.New("cannot go left when bottom")
-	}
+// PRE: !IsBottom
+func (i *Iterator) Left() *Iterator {
 	itr := NewIterator(i.whole)
 	itr.down = i.down.Left
 	itr.up = i.down
 	itr.isLeftArc = true
-	return itr, nil
+	return itr
 }
 
 // RightMost moves the Iterator down as far as possible following the right branches (creates aa new one)
@@ -162,6 +156,7 @@ func (i *Iterator) Alias() *Iterator {
 func (i *Iterator) IsInside(t *BinaryTree) bool {
 	return i.whole == t
 }
+
 
 // Update the data in the down node
 func (i *Iterator) Update(item Item) error {
@@ -230,4 +225,42 @@ func (i *Iterator) Paste(t *BinaryTree) error {
 	// empty the tree
 	t.root = nil
 	return nil
+}
+
+// RotateRight rotate the tree regarding this schematic:
+//       \ /                    \ /
+// i -->  |						 | <-- i
+//     	 [y]					[x]
+//       / \	RotateRight		/ \
+//    [x]  /c\       --> 	  /a\  [y]
+//    / \					  	   / \
+//  /a\ /b\						 /b\ /c\
+// Where "[]" is a node, "/\" is subtree and "\ /" is parent tree
+// Reverse operation of RotateLeft
+func (i *Iterator) RotateRight() {
+	y := i.Cut().Root()
+	b :=  y.Left().Right().Cut()
+	x := y.Left().Cut().Root()
+	_ = y.Left().Paste(b)
+	_ = x.Right().Paste(y.whole)
+	_ = i.Paste(x.whole)
+}
+
+// RotateLeft rotate the tree regarding this schematic:
+//       \ /                         \ /
+//        | <-- i              i -->  |
+//       [x]                       	 [y]
+//       / \      RotateLeft         / \
+//     /a\  [y]      -->          [x]  /c\
+//          / \                   / \
+//        /b\ /c\               /a\ /b\
+// Where "[]" is a node, "/\" is subtree and "\ /" is parent tree
+// Reverse operation of RotateRight
+func (i *Iterator) RotateLeft() {
+	x := i.Cut().Root()
+	b :=  x.Right().Left().Cut()
+	y := x.Right().Cut().Root()
+	_ = x.Right().Paste(b)
+	_ = y.Left().Paste(x.whole)
+	_ = i.Paste(x.whole)
 }
