@@ -170,24 +170,30 @@ func (i *Iterator) Update(item Item) error {
 // Insert replaces the subtree with a single node containing the item
 func (i *Iterator) Insert(item Item) {
 	i.Cut()
-	i.down = &BinaryNode{
+	node := &BinaryNode{
 		Left:   nil,
 		Right:  nil,
 		Parent: i.up,
 		Item:   item,
 	}
 	if i.IsRoot() {
-		i.whole.root = i.down
+		i.whole.root = node
 	} else if i.isLeftArc {
-		i.up.Left = i.down
+		i.up.Left = node
 	} else {
-		i.up.Right = i.down
+		i.up.Right = node
 	}
+	i.down = node
 }
 
 // Cut the subtree and return it as new element
 func (i *Iterator) Cut() *BinaryTree {
-	tree := &BinaryTree{root: i.down}
+	tree := &BinaryTree{}
+	if i.IsBottom() {
+		return tree
+	}
+	tree.root = i.down
+	tree.root.Parent = nil
 	if i.IsRoot() {
 		i.whole.root = nil
 	} else if i.isLeftArc {
@@ -262,5 +268,5 @@ func (i *Iterator) RotateLeft() {
 	y := x.Right().Cut().Root()
 	_ = x.Right().Paste(b)
 	_ = y.Left().Paste(x.whole)
-	_ = i.Paste(x.whole)
+	_ = i.Paste(y.whole)
 }
