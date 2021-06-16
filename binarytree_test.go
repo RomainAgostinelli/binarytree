@@ -18,10 +18,8 @@ func TestBTree(t *testing.T) {
 		t.Fatal("An iterator on a tree with one element is root and leaf")
 	}
 
-	left, _ := itr.Left()
-	right, _ := itr.Right()
-	left.Insert(&UsedItem{"Coucou"})
-	right.Insert(&UsedItem{"Tests"})
+	itr.Left().Insert(&UsedItem{"Coucou"})
+	itr.Right().Insert(&UsedItem{"Tests"})
 	if itr.HasRight() == itr.HasLeft() == false {
 		t.Fatal("Itr must have right and left child")
 	}
