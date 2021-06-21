@@ -121,8 +121,8 @@ func (i *Iterator) RightMost() *Iterator {
 
 	for !itr.IsBottom() {
 		// Do not use "Right" method as it creates a new one each time
-		itr.down = itr.down.Right
 		itr.up = itr.down
+		itr.down = itr.down.Right
 		itr.isLeftArc = false
 	}
 	return itr
@@ -135,8 +135,8 @@ func (i *Iterator) LeftMost() *Iterator {
 
 	for !itr.IsBottom() {
 		// Do not use "Left" method as it creates a new one each time
-		itr.down = itr.down.Left
 		itr.up = itr.down
+		itr.down = itr.down.Left
 		itr.isLeftArc = true
 	}
 	return itr
@@ -156,7 +156,6 @@ func (i *Iterator) Alias() *Iterator {
 func (i *Iterator) IsInside(t *BinaryTree) bool {
 	return i.whole == t
 }
-
 
 // Update the data in the down node
 func (i *Iterator) Update(item Item) error {
@@ -245,7 +244,7 @@ func (i *Iterator) Paste(t *BinaryTree) error {
 // Reverse operation of RotateLeft
 func (i *Iterator) RotateRight() {
 	y := i.Cut().Root()
-	b :=  y.Left().Right().Cut()
+	b := y.Left().Right().Cut()
 	x := y.Left().Cut().Root()
 	_ = y.Left().Paste(b)
 	_ = x.Right().Paste(y.whole)
@@ -264,7 +263,7 @@ func (i *Iterator) RotateRight() {
 // Reverse operation of RotateRight
 func (i *Iterator) RotateLeft() {
 	x := i.Cut().Root()
-	b :=  x.Right().Left().Cut()
+	b := x.Right().Left().Cut()
 	y := x.Right().Cut().Root()
 	_ = x.Right().Paste(b)
 	_ = y.Left().Paste(x.whole)
