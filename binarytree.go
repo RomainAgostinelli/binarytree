@@ -2,6 +2,7 @@ package binarytree
 
 import (
 	"errors"
+	"log"
 )
 
 // BinaryNode struct representing a node of the BinaryTree, can contain an Item
@@ -83,15 +84,15 @@ func (i *Iterator) Consult() Item {
 
 // Up moves the Iterator upward (creates a new one)
 // PRE: !isRoot returns an error if isRoot
-func (i *Iterator) Up() (*Iterator, error) {
+func (i *Iterator) Up() *Iterator {
 	if i.IsRoot() {
-		return nil, errors.New("cannot go up when root")
+		log.Fatalln("BINARY TREE: Cannot go up when root")
 	}
 	itr := NewIterator(i.whole)
 	itr.down = i.up
 	itr.up = i.up.Parent
 	itr.isLeftArc = !itr.IsRoot() && itr.down == itr.up.Left
-	return itr, nil
+	return itr
 }
 
 // Right moves the Iterator on the right branch of down node (creates a new one)
