@@ -1,3 +1,3 @@
-module github.com/RomainAgostinelli/binarytree
+module github.com/ag0st/binarytree
 
-go 1.16
+go 1.18
